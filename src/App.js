@@ -7,6 +7,7 @@ import Tables from './Tables';
 import AdminPanel from './AdminPanel';
 
 class App extends Component {
+
   render() {
     return (
       <BrowserRouter>

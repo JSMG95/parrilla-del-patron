@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Nav, NavItem, Row } from 'react-bootstrap';
-import { Route, NavLink, Redirect, Link } from 'react-router-dom';
+import { Nav, NavItem } from 'react-bootstrap';
+import { Route, Redirect } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import Ventas from './admin-components/Ventas';
 import Menu from './admin-components/Menu';
@@ -11,10 +11,8 @@ class AdminPanel extends Component {
 
     constructor(props) {
         super(props);
-
     }
-
-
+    
     render() {
         return (
             <div>
