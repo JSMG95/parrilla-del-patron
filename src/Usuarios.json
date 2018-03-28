@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "descripcion": "Usuario Administrador",
+        "username": "root",
+        "password": "******",
+        "rol": "admin"
+    },
+    {
+        "id": 2,
+        "descripcion": "Usuario Mesero",
+        "username": "jsmg",
+        "password": "******",
+        "rol": "mesero"
+    },
+    {
+        "id": 3,
+        "descripcion": "Usuario Cajero",
+        "username": "gdm1",
+        "password": "******",
+        "rol": "cajero"
+    }
+]

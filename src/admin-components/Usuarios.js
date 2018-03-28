@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
+import ListaDetalleItems from './ListaDetalleItems';
+import data from '../Usuarios.json';
 
 class Usuarios extends Component {
 
-
     render(){
         return(
-            <h2>Usuarios Component</h2>
+            <ListaDetalleItems 
+                items={data}
+                onDelete={(key) => console.log('Delete: ' + key)}
+                onEdit={(key) => console.log('Edit: ' + key)}
+            />
         );
     }
 }
