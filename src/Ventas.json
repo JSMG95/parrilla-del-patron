@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "descripcion": "Venta del dia 13 de Marzo",
+        "total": 1510.00,
+        "clientes": 6
+    },
+    {
+        "id": 2,
+        "descripcion": "Venta del dia 14 de Marzo",
+        "total": 2160.00,
+        "clientes": 11
+    },
+    {
+        "id": 3,
+        "descripcion": "Venta del dia 15 de Marzo",
+        "total": 912.50,
+        "clientes": 4
+    },
+    {
+        "id": 4,
+        "descripcion": "Venta del dia 16 de Marzo",
+        "total": 657.30,
+        "clientes": 3
+    }
+]
