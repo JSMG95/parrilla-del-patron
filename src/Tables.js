@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col, Panel, Button } from 'react-bootstrap';
+import { Grid } from 'react-bootstrap';
+import { Route } from 'react-router-dom';
+
+import TableGrid from './TableGrid';
+import ResumenDia from './ResumenDia';
+import DetalleMesa from './DetalleMesa';
+import ResumenMesa from './ResumenMesa';
+
 
 class Tables extends Component {
 
@@ -7,29 +14,35 @@ class Tables extends Component {
     render() {
         return (
             <Grid>
-                <Col sm={9} md={9}>
-                    
-                        <Row>
-                            <Col sm={6} md={3}>
-                                <Panel>
-                                    <h2>Mesa 1</h2>
-                                    <Button bsStyle="success">Iniciar Cuenta</Button>
-                                </Panel>
-                            </Col>
-                            <Col sm={6} md={3}>
-                                <Panel>
-                                    <h2>Mesa 2</h2>
-                                    <Button bsStyle="success">Iniciar Cuenta</Button>
-                                </Panel>
-                            </Col>
-                        </Row>
-                    
-                </Col>
-                <Col sm={3} md={3}>
-                    <Panel>
-                        <h3> Resumen del Dia</h3>
-                    </Panel>
-                </Col>
+                <Route exact path={this.props.match.path}
+                             render={(props) => <TableGrid {...props}
+                                                    calculateSubtotal={this.props.calculateSubtotal} 
+                                                    currentVenta={this.props.currentVenta} mesas={this.props.mesas} 
+                                                    subtotalHandler={this.props.subtotalHandler}
+                                                />} />
+
+                <Route path={`${this.props.match.path}/:id`}
+                        render={(props) =>  <DetalleMesa {...props}
+                                                productos={this.props.productos}
+                                                currentVenta={this.props.currentVenta} 
+                                                onNewVentaProductoHandler={this.props.onNewVentaProductoHandler}
+                                            />} />
+
+                <Route exact path={this.props.match.path} 
+                             render={() => <ResumenDia 
+                                                venta={this.props.venta} 
+                                                mesas={this.props.mesas} 
+                                                calculateTotal={this.props.calculateTotal} 
+                                                calculateSubtotal={this.props.calculateSubtotal}
+                                            />} />
+                <Route path={`${this.props.match.path}/:id`} 
+                        render={(props) => <ResumenMesa {...props} 
+                                                mesas={this.props.mesas} 
+                                                currentVenta={this.props.currentVenta} 
+                                                calculateSubtotal={this.props.calculateSubtotal} 
+                                                onFinishVentaHandler={this.props.onFinishVentaHandler} 
+                                                onVentaProductoDeleteHandler={this.props.onVentaProductoDeleteHandler}
+                                            />} />
             </Grid>
         );
     }
