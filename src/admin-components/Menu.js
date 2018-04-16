@@ -13,32 +13,38 @@ class Menu extends Component {
             formShow: false,
             itemToEdit: null
         };
+        this.formBtnStyle = 'success';
     }
 
-    add(item) {
+    saveItemHandler(item) {
         var menu = this.state.menu;
         if (item.id != null){
+            //editing
             let foundIndex = menu.findIndex(element => element.id === item.id);
             menu.splice(foundIndex, 1, item);
         } else {
+            //adding
             item.id = this.state.menu.length + 1;
             menu.push(item);
         }
         this.setState({ menu: menu, formShow: false, itemToEdit: null });
+        //this.setState({...this.state, menu});
     }
 
-    delete(key) {
+    deleteItemHandler(key) {
         var menu = this.state.menu.filter((item) => item.id !== key);
         this.setState({ menu, selectedProductId: null });
     }
 
-    edit(key) {
+    showEditFormHandler(key) {
         var item = this.state.menu.filter((item) => item.id === key);
+        this.formBtnStyle = 'warning';
         this.setState({ itemToEdit: item[0], formShow: true });
     }
 
-    handleClose() {
-        this.setState({ formShow: false, itemToEdit: null });
+    handleClose(show = false) {
+        this.formBtnStyle = 'success';
+        this.setState({ formShow: show, itemToEdit: null });
     }
 
     render(){
@@ -52,13 +58,13 @@ class Menu extends Component {
                 <Panel style={extPanelStyle}>
                     <Row className='text-center'>
                         <Col mdOffset={4} md={4}>
-                            <Button bsSize='large' bsStyle='success' onClick={() => this.setState({formShow: true, itemToEdit: null})}><Glyphicon glyph="cutlery" /> Añadir</Button>
+                            <Button bsSize='large' bsStyle='success' onClick={() => this.handleClose(true)}><Glyphicon glyph="cutlery" /> Añadir</Button>
                         </Col>
                     </Row>  
                     <ListaDetalleItems 
                         items={this.state.menu}
-                        onDelete={this.delete.bind(this)}
-                        onEdit={this.edit.bind(this)}
+                        onDelete={this.deleteItemHandler.bind(this)}
+                        onEdit={this.showEditFormHandler.bind(this)}
                     />
                 </Panel>
                 </Col>
@@ -66,9 +72,9 @@ class Menu extends Component {
                     show={this.state.formShow}
                     handleClose={this.handleClose.bind(this)}
                     itemToEdit={this.state.itemToEdit}
-                    formHandler={this.add.bind(this)}
+                    formHandler={this.saveItemHandler.bind(this)}
                     bsText={'Aceptar'}
-                    bsStyle={'warning'}
+                    bsStyle={this.formBtnStyle}
                 />
             </div>
         );

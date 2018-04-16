@@ -34,7 +34,7 @@ class FormProducto extends Component {
                 clasificacion: ''
             }
         });
-        this.props.handleClose();
+        this.props.handleClose(false);
     }
 
     handleSubmit() {
