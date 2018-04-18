@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { ListGroup, ListGroupItem, Row, Col, Panel } from 'react-bootstrap';
 import DetalleItem from './DetalleItem';
+import ActivitySpinner from '../ActivitySpinner';
 
 class ListaDetalleItems extends Component {
     constructor(props) {
@@ -15,19 +16,23 @@ class ListaDetalleItems extends Component {
     }
 
     renderList() {
-        return this.props.items.map(item => 
-            <ListGroupItem
-                key={item.id}
-                active={item.id===this.selectedItem} 
-                onClick={() => this.selectItem(item.id)}>
-                {item.descripcion}
-            </ListGroupItem>
-        );
+        if (this.props.loading) {
+            return <ActivitySpinner />;
+        } else {
+            return this.props.items.map(item => 
+                <ListGroupItem
+                    key={item._id}
+                    //active={item.id===this.selectedItem} 
+                    onClick={() => this.selectItem(item._id)}>
+                    {item.descripcion}
+                </ListGroupItem>
+            );
+        }
     }
 
     renderDetail() {
         if (this.state.selectedItem) {
-            var prod = this.props.items.find((item) => item.id === this.state.selectedItem);
+            var prod = this.props.items.find((item) => item._id === this.state.selectedItem);
             return (
                 <DetalleItem 
                     onDelete={this.props.onDelete}
@@ -44,13 +49,19 @@ class ListaDetalleItems extends Component {
             intLeftPanelStyle,
             intRightPanelStyle
         } = styles;
+        const isLoading = this.props.loading;
+        const content = isLoading ? (
+            <ActivitySpinner />
+        ) : (
+            <ListGroup style={listGroupStyle}>
+                {this.renderList()}
+            </ListGroup>
+        );
         return (
             <Row>
                 <Col md={6} xs={6}>
                     <Panel style={intLeftPanelStyle}>
-                    <ListGroup style={listGroupStyle}>
-                        {this.renderList()}
-                    </ListGroup>
+                        {content}
                     </Panel>
                 </Col>
                 <Col md={6} xs={6}>
@@ -73,7 +84,7 @@ const styles = {
         marginRight: 0,
         marginBottom: 20,
         padding: 10,
-        height: '56vh'
+        height: '100%'
     },
     intRightPanelStyle: {
         marginTop: 20,
@@ -81,7 +92,7 @@ const styles = {
         marginRight: 20,
         marginBottom: 20,
         padding: 10,
-        height: '56vh'
+        height: '100%'
     }
 };
 

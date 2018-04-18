@@ -6,7 +6,9 @@ class DetalleItem extends Component {
 
     renderFields() {
         const t = Object.keys(this.props.item).map(key => {
-            return <h4 key={key}><b>{key.charAt(0).toUpperCase() + key.slice(1)}:</b> {this.props.item[key]}</h4>
+            if (key !== '_id' && key !== '__v'){
+                return <h4 key={key}><b>{key.charAt(0).toUpperCase() + key.slice(1)}:</b> {this.props.item[key]}</h4>
+            }
         });
         return t;
     }
@@ -22,7 +24,7 @@ class DetalleItem extends Component {
                         <ButtonGroup bsSize='large'>
                             <Button bsStyle='warning' onClick={() => onEdit(item.id)}><Glyphicon glyph="edit" /> Editar</Button>
                             <Confirm
-                                onConfirm={() => onDelete(item.id)}
+                                onConfirm={() => onDelete(item._id)}
                                 body={'¿Está seguro de eliminar?'}
                                 confirmText="Eliminar"
                                 title="Eliminar Registro">

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 //import './App.css';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import axios from 'axios';
 import Header from './Header';
 import Tables from './Tables';
 import AdminPanel from './AdminPanel';
@@ -13,12 +14,32 @@ import { Productos } from './mock/productos';
 class App extends Component {
   state = {
     mesas: Mesas,
-    productos: Productos,
+    productos: [],
     venta: [],
     currentVenta: CurrentVenta,
-    subtotal: 0
+    subtotal: 0,
+    adminControl: {
+      selectedId: null,
+      formShow: false,
+      itemToEdit: null
+    },
+    adminVentas: [],
+    loading: true,
+    loadingError: false
   }
   lastVentaId = 7;
+
+  componentDidMount() {
+    this.setState({ loading: true, loadingError: false });
+    axios.get('http://localhost:3001/api/productos')
+      .then((response) => {
+        this.setState({ productos: response.data, loading: false, loadingError: false });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ loadingError: true });
+      });
+  }
 
   newVentaId = () => {
     const id = this.lastVentaId;
@@ -33,11 +54,16 @@ class App extends Component {
     let newMesasState = [...this.state.mesas];
     newMesasState[foundIndex].status = "AVAILABLE";
     let newCurrentVenta = { ...this.state.currentVenta }
+    /* let tmp = [...this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id)]
+    tmp = tmp.map((venta, index) => {
+      delete venta.mesa
+    }) */
     this.setState({
       venta: [
         ...this.state.venta,
         [...this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id)]
-
+        // {venta:[...tmp],
+        // mesaIndex: mesa.id}
       ],
       currentVenta: this.state.currentVenta.filter((venta) => venta.mesa.id != mesa.id),
       mesas: newMesasState
@@ -97,7 +123,7 @@ class App extends Component {
 
   onNewVentaProductoHandler2 = (producto, mesaId) => {
     let mesaIndex = this.state.mesas.findIndex((mesa) => mesa.id == mesaId);
-    let productoIndex = this.state.currentVenta.findIndex((venta) => venta.idProducto == producto.id && mesaId == venta.mesa.id);
+    let productoIndex = this.state.currentVenta.findIndex((venta) => venta.idProducto === producto._id && mesaId == venta.mesa.id);
 
     let newMesasState = [...this.state.mesas];
     newMesasState[mesaIndex].status = "PENDING";
@@ -115,7 +141,7 @@ class App extends Component {
           ...this.state.currentVenta,
           {
             id,
-            idProducto: producto.id,
+            idProducto: producto._id,
             descripcion: producto.descripcion,
             precio: producto.precio,
             clasificacion: producto.clasificacion,
@@ -129,7 +155,7 @@ class App extends Component {
   }
 
   onVentaProductoDeleteHandler2 = (index, mesaId) => {
-    let foundIndex = this.state.currentVenta.findIndex((venta) => venta.idProducto == index && mesaId == venta.mesa.id);
+    let foundIndex = this.state.currentVenta.findIndex((venta) => venta.idProducto === index && mesaId == venta.mesa.id);
     if (this.state.currentVenta[foundIndex].cantidad <= 1) {
       const newVentasList = [
         ...this.state.currentVenta.slice(0, foundIndex),
@@ -145,6 +171,59 @@ class App extends Component {
         currentVenta: newCurrentVenta
       });
     }
+  }
+
+  //------- ADMIN HANDLERS ------
+  adminSaveItemHandler = (item) => {
+    this.setState({ loading: true, loadingError: false });
+    if (item._id != null){
+      axios.put('http://localhost:3001/api/productos', { item, type:'Update' })
+      .then((res) => {
+        this.setState({ productos: res.data, loading: false, loadingError: true })
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ loadingError: true });
+      });
+    } else {
+      axios.post('http://localhost:3001/api/productos', item)
+      .then((res) => {
+        this.setState({ productos: res.data, loading: false, loadingError: true })
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ loadingError: true });
+      });
+    }
+    var adminControl = {...this.state.adminControl, formShow: false, itemToEdit: null };
+    this.setState({ adminControl });
+  }
+
+  adminDeleteItemHandler = (key) => {
+    this.setState({ loading: true, loadingError: false });
+    axios.put('http://localhost:3001/api/productos', { item: { _id: key }, type:'Delete' })
+      .then((res) => {
+        this.setState({ productos: res.data, loading: false, loadingError: true })
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ loadingError: true });
+      });
+    var adminControl = {...this.state.adminControl, selectedId: null};
+    this.setState({ adminControl });
+  }
+
+  adminShowEditFormHandler = (key) => {
+    var item = this.state.productos.filter((item) => item.id === key);
+    //this.formBtnStyle = 'warning';
+    var adminControl = {...this.state.adminControl, itemToEdit: item[0], formShow: true};
+    this.setState({ adminControl });
+  }
+
+  adminHandleClose = (show = false) => {
+    //this.formBtnStyle = 'success';
+    var adminControl2 = {...this.state.adminControl, formShow: show, itemToEdit: null };
+    this.setState({ adminControl: adminControl2 });
   }
 
   render() {
@@ -164,8 +243,19 @@ class App extends Component {
               onVentaProductoDeleteHandler={this.onVentaProductoDeleteHandler2}
               onFinishVentaHandler={this.onFinishVentaHandler2}
               calculateSubtotal={this.calculateSubtotal}
-              calculateTotal={this.calculateTotal2} />} />
-            <Route path="/admin" component={AdminPanel} />
+              calculateTotal={this.calculateTotal2}
+              loading={this.state.loading}
+              loadingError={this.state.loadingError} />}
+               />
+            <Route path="/admin" render={(props) => <AdminPanel {...props}
+              menu={this.state.productos}
+              adminControl={this.state.adminControl}
+              adminSaveItemHandler={this.adminSaveItemHandler}
+              adminDeleteItemHandler={this.adminDeleteItemHandler}
+              adminShowEditFormHandler={this.adminShowEditFormHandler}
+              adminHandleClose={this.adminHandleClose}
+              loading={this.state.loading}
+            />} />
             <Route component={NotFound} />
           </Switch>
         </div>

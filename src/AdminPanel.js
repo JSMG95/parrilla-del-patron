@@ -7,7 +7,6 @@ import Menu from './admin-components/Menu';
 import Usuarios from './admin-components/Usuarios';
 import Ajustes from './admin-components/Ajustes';
 
-
 class AdminPanel extends Component {
 
     constructor(props) {
@@ -28,9 +27,16 @@ class AdminPanel extends Component {
                 <Route exact path={this.props.match.path} render={() => <Redirect to={`${this.props.match.path}/ventas`} />} />
                 <Route path={`${this.props.match.path}/settings`} component={Ajustes} />
                 <Route path={`${this.props.match.path}/ventas`} component={Ventas} />
-                <Route path={`${this.props.match.path}/menu`} component={Menu} />
+                <Route path={`${this.props.match.path}/menu`} render={() => <Menu
+                                                                                menu={this.props.menu}
+                                                                                adminControl={this.props.adminControl}
+                                                                                adminSaveItemHandler={this.props.adminSaveItemHandler}
+                                                                                adminDeleteItemHandler={this.props.adminDeleteItemHandler}
+                                                                                adminShowEditFormHandler={this.props.adminShowEditFormHandler}
+                                                                                adminHandleClose={this.props.adminHandleClose}
+                                                                                loading={this.props.loading}
+                                                                                />} />
                 <Route path={`${this.props.match.path}/usuarios`} component={Usuarios} />
-
 
             </div>
         );

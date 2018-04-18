@@ -6,7 +6,7 @@ class FormProducto extends Component {
         super(props);
         this.state= {
             item: {
-                id: null,
+                _id: null,
                 descripcion: '',
                 precio: '',
                 clasificacion: ''
@@ -25,10 +25,11 @@ class FormProducto extends Component {
         }
 	}
 
-    handleOnHide() {
+    handleOnHide = () => {
+        console.log("hola")
         this.setState({ 
             item: {
-                id: null,
+                _id: null,
                 descripcion: '',
                 precio: '',
                 clasificacion: ''
@@ -37,15 +38,15 @@ class FormProducto extends Component {
         this.props.handleClose(false);
     }
 
-    handleSubmit() {
+    handleSubmit = () => {
         var item = {
-            id: null,
+            _id: null,
             descripcion: this.desc.value,
             precio: parseInt(this.precio.value),
             clasificacion: this.clasf.value
         }
         if (this.props.itemToEdit){
-            item.id = this.props.itemToEdit.id;    
+            item._id = this.props.itemToEdit._id;    
         }
         this.props.formHandler(item);
     }
@@ -53,7 +54,7 @@ class FormProducto extends Component {
     render(){
         return (
         <div className="static-modal">
-            <Modal show={this.props.show} onHide={this.handleOnHide.bind(this)}>
+            <Modal show={this.props.show} onHide={() => this.handleOnHide}>
                 <Modal.Header>
                     <Modal.Title>Añadir Producto al Menú</Modal.Title>
                 </Modal.Header>
@@ -89,17 +90,17 @@ class FormProducto extends Component {
                             style={{width: 210}}
                             inputRef={ref => { this.clasf = ref; }}>
                                 <option value="Entrada">Entrada</option>
-                                <option value="Platillo">Platillo</option>
+                                <option value="Comida">Comida</option>
                                 <option value="Bebida">Bebida</option>
-                                <option value="Postre">Postre</option>
+                                <option value="Complementos">Complementos</option>
                         </FormControl>
                     </FormGroup>
                 </Form>
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button onClick={this.handleOnHide.bind(this)}>Cancelar</Button>
-                    <Button bsStyle={this.props.bsStyle} onClick={this.handleSubmit.bind(this)}>{this.props.bsText}</Button>
+                    <Button onClick={() => this.handleOnHide()}>Cancelar</Button>
+                    <Button bsStyle={this.props.bsStyle} onClick={(item) => this.handleSubmit()}>{this.props.bsText}</Button>
                 </Modal.Footer>
             </Modal>
         </div>
