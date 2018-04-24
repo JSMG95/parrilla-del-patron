@@ -6,13 +6,19 @@ import TableGrid from './TableGrid';
 import ResumenDia from './ResumenDia';
 import DetalleMesa from './DetalleMesa';
 import ResumenMesa from './ResumenMesa';
-
+import ActivitySpinner from './ActivitySpinner';
 
 class Tables extends Component {
-
+    constructor(props) {
+        super(props);
+    }
 
     render() {
-        return (
+        const isLoading = this.props.loading;
+        const content = isLoading ? (
+            <ActivitySpinner 
+                loadingError={this.props.loadingError} />
+        ) : (
             <Grid>
                 <Route exact path={this.props.match.path}
                              render={(props) => <TableGrid {...props}
@@ -44,6 +50,10 @@ class Tables extends Component {
                                                 onVentaProductoDeleteHandler={this.props.onVentaProductoDeleteHandler}
                                             />} />
             </Grid>
+        );
+        return (<div>
+          {content}
+          </div>
         );
     }
 }

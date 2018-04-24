@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "react": "^16.2.0",
+    "react-activity": "^1.2.2",
     "react-bootstrap": "^0.32.1",
     "react-confirm-bootstrap": "^5.2.1",
     "react-dom": "^16.2.0",
