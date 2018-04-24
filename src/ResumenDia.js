@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { Col, Panel, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Col, Panel, ListGroup, ListGroupItem, Button, Glyphicon } from 'react-bootstrap';
 
 class ResumenDia extends Component {
 
 
 
     render() {
+        const finishButtonStyle = {
+            backgroundColor: 'darkorange',
+            borderColor: 'darkorange'
+        }
 
         return (
             <Col sm={3} md={3}>
@@ -16,19 +20,24 @@ class ResumenDia extends Component {
                     <ListGroup style={{ fontSize: '15px' }}>
                         {
 
-                            this.props.venta.map((venta, index) =>
-
+                            this.props.venta.map((ventaMesa, index) =>
+                                //ventaMesa.venta.map((venta, index) =>
                                 <ListGroupItem key={index} className="text-center">
-                                    {`Venta: ${venta[0].mesa.tipo} `}
+                                    {`Venta: ${ventaMesa.mesa[0].tipo} `}
                                     -----
-                                    {` $${this.props.calculateSubtotal(venta)}.00`}
+                                    {` $${this.props.calculateSubtotal(ventaMesa.venta)}.00`}
 
                                 </ListGroupItem>
-                            )
+                                )
+                            //)
                         }
                     </ListGroup>
                     <Panel.Footer>
                         <h4>{`Total: $${this.props.calculateTotal(this.props.mesas)}.00`}</h4>
+                        <hr />
+                        <Button style={finishButtonStyle} bsStyle="success" bsSize="large" block onClick={() => { this.props }}>
+                            <Glyphicon glyph="ok-circle" /> Finalizar Cuenta
+                        </Button>
                     </Panel.Footer>
                 </Panel>
             </Col>
