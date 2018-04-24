@@ -28,10 +28,11 @@ class App extends Component {
     loadingError: false
   }
   lastVentaId = 7;
+  ip = '10.33.206.175';
 
   componentDidMount() {
     this.setState({ loading: true, loadingError: false });
-    axios.get('http://localhost:3001/api/productos')
+    axios.get(`http://${this.ip}:3001/api/productos`)
       .then((response) => {
         this.setState({ productos: response.data, loading: false, loadingError: false });
       })
@@ -53,17 +54,21 @@ class App extends Component {
     let foundIndex = this.state.mesas.findIndex((mesa2) => mesa2.id == mesa.id)
     let newMesasState = [...this.state.mesas];
     newMesasState[foundIndex].status = "AVAILABLE";
-    let newCurrentVenta = { ...this.state.currentVenta }
-    /* let tmp = [...this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id)]
-    tmp = tmp.map((venta, index) => {
+    let newCurrentVenta = { ...this.state.currentVenta };
+    console.log(JSON.parse(JSON.stringify(this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id))));
+    let tmp = JSON.parse(JSON.stringify(this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id)));
+    //let tmp = this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id);
+    tmp.forEach((venta) => {
       delete venta.mesa
-    }) */
+    })
+    console.log(tmp);
     this.setState({
       venta: [
         ...this.state.venta,
-        [...this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id)]
-        // {venta:[...tmp],
-        // mesaIndex: mesa.id}
+        {
+          venta:[...tmp],
+          mesa: this.state.mesas.filter((_mesa)=> _mesa.id == mesa.id)
+        }
       ],
       currentVenta: this.state.currentVenta.filter((venta) => venta.mesa.id != mesa.id),
       mesas: newMesasState
@@ -110,8 +115,8 @@ class App extends Component {
   calculateTotal2 = () => {
     let total = 0;
     if (this.state.venta && this.state.venta.length > 0) {
-      this.state.venta.forEach((venta) => {
-        venta.forEach((producto) => {
+      this.state.venta.forEach((ventaMesa) => {
+        ventaMesa.venta.forEach((producto) => {
           if (producto) {
             total += producto.precio * producto.cantidad;
           }
@@ -172,12 +177,13 @@ class App extends Component {
       });
     }
   }
+  
 
   //------- ADMIN HANDLERS ------
   adminSaveItemHandler = (item) => {
     this.setState({ loading: true, loadingError: false });
     if (item._id != null){
-      axios.put('http://localhost:3001/api/productos', { item, type:'Update' })
+      axios.put(`http://${this.ip}:3001/api/productos`, { item, type:'Update' })
       .then((res) => {
         this.setState({ productos: res.data, loading: false, loadingError: true })
       })
@@ -186,7 +192,7 @@ class App extends Component {
         this.setState({ loadingError: true });
       });
     } else {
-      axios.post('http://localhost:3001/api/productos', item)
+      axios.post(`http://${this.ip}:3001/api/productos`, item)
       .then((res) => {
         this.setState({ productos: res.data, loading: false, loadingError: true })
       })
@@ -201,7 +207,7 @@ class App extends Component {
 
   adminDeleteItemHandler = (key) => {
     this.setState({ loading: true, loadingError: false });
-    axios.put('http://localhost:3001/api/productos', { item: { _id: key }, type:'Delete' })
+    axios.put(`http://${this.ip}:3001/api/productos`, { item: { _id: key }, type:'Delete' })
       .then((res) => {
         this.setState({ productos: res.data, loading: false, loadingError: true })
       })
@@ -214,19 +220,16 @@ class App extends Component {
   }
 
   adminShowEditFormHandler = (key) => {
-    var item = this.state.productos.filter((item) => item._id === key);
+    var item = this.state.productos.filter((item) => item.id === key);
+    //this.formBtnStyle = 'warning';
     var adminControl = {...this.state.adminControl, itemToEdit: item[0], formShow: true};
     this.setState({ adminControl });
   }
 
   adminHandleClose = (show = false) => {
-    var adminControl = {...this.state.adminControl, formShow: show, itemToEdit: null };
-    this.setState({ adminControl });
-  }
-
-  adminControlSelectItem = (id) => {
-    var adminControl = { ...this.state.adminControl, selectedId: id };
-    this.setState({ adminControl });
+    //this.formBtnStyle = 'success';
+    var adminControl2 = {...this.state.adminControl, formShow: show, itemToEdit: null };
+    this.setState({ adminControl: adminControl2 });
   }
 
   render() {
@@ -257,7 +260,6 @@ class App extends Component {
               adminDeleteItemHandler={this.adminDeleteItemHandler}
               adminShowEditFormHandler={this.adminShowEditFormHandler}
               adminHandleClose={this.adminHandleClose}
-              adminControlSelectItem={this.adminControlSelectItem}
               loading={this.state.loading}
             />} />
             <Route component={NotFound} />
