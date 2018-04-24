@@ -214,16 +214,19 @@ class App extends Component {
   }
 
   adminShowEditFormHandler = (key) => {
-    var item = this.state.productos.filter((item) => item.id === key);
-    //this.formBtnStyle = 'warning';
+    var item = this.state.productos.filter((item) => item._id === key);
     var adminControl = {...this.state.adminControl, itemToEdit: item[0], formShow: true};
     this.setState({ adminControl });
   }
 
   adminHandleClose = (show = false) => {
-    //this.formBtnStyle = 'success';
-    var adminControl2 = {...this.state.adminControl, formShow: show, itemToEdit: null };
-    this.setState({ adminControl: adminControl2 });
+    var adminControl = {...this.state.adminControl, formShow: show, itemToEdit: null };
+    this.setState({ adminControl });
+  }
+
+  adminControlSelectItem = (id) => {
+    var adminControl = { ...this.state.adminControl, selectedId: id };
+    this.setState({ adminControl });
   }
 
   render() {
@@ -254,6 +257,7 @@ class App extends Component {
               adminDeleteItemHandler={this.adminDeleteItemHandler}
               adminShowEditFormHandler={this.adminShowEditFormHandler}
               adminHandleClose={this.adminHandleClose}
+              adminControlSelectItem={this.adminControlSelectItem}
               loading={this.state.loading}
             />} />
             <Route component={NotFound} />

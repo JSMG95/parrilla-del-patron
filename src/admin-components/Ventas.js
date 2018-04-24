@@ -7,17 +7,7 @@ import data from '../Ventas.json';
 class Ventas extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            ventas: data,
-            selectedItemId: null,
-            formShow: false,
-            itemToEdit: null
-        };
         this.formBtnStyle = 'success';
-    }
-
-    handleClose() {
-        this.setState({ formShow: false, itemToEdit: null });
     }
     
     render(){
@@ -29,13 +19,16 @@ class Ventas extends Component {
                         items={data}
                         onDelete={(key) => console.log('Delete: ' + key)}
                         onEdit={(key) => console.log('Edit: ' + key)}
+                        loading={this.props.loading}
+                        adminControl={this.props.adminControl}
+                        adminControlSelectItem={this.props.adminControlSelectItem}
                     />
                     </Panel>
                 </Col>
                 <FormProducto 
-                    show={this.state.formShow}
-                    handleClose={(this.handleClose.bind(this))}
-                    itemToEdit={this.state.itemToEdit}
+                    show={this.props.adminControl.formShow}
+                    handleClose={(this.props.adminHandleClose)}
+                    itemToEdit={this.props.adminControl.itemToEdit}
                     formHandler={() => console.log('Wants to add/edit')}
                     bsText={'Aceptar'}
                     bsStyle={this.formBtnStyle}

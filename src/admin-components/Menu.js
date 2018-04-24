@@ -27,6 +27,8 @@ class Menu extends Component {
                         onDelete={this.props.adminDeleteItemHandler}
                         onEdit={this.props.adminShowEditFormHandler}
                         loading={this.props.loading}
+                        adminControl={this.props.adminControl}
+                        adminControlSelectItem={this.props.adminControlSelectItem}
                     />
                 </Panel>
                 </Col>

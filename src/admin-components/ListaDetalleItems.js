@@ -6,14 +6,7 @@ import ActivitySpinner from '../ActivitySpinner';
 class ListaDetalleItems extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selectedItem: null
-        };
     };
-
-    selectItem(id) {
-        this.setState({ selectedItem: id });
-    }
 
     renderList() {
         if (this.props.loading) {
@@ -22,8 +15,8 @@ class ListaDetalleItems extends Component {
             return this.props.items.map(item => 
                 <ListGroupItem
                     key={item._id}
-                    //active={item.id===this.selectedItem} 
-                    onClick={() => this.selectItem(item._id)}>
+                    active={item._id === this.props.adminControl.selectedId} 
+                    onClick={() => this.props.adminControlSelectItem(item._id)}>
                     {item.descripcion}
                 </ListGroupItem>
             );
@@ -31,8 +24,8 @@ class ListaDetalleItems extends Component {
     }
 
     renderDetail() {
-        if (this.state.selectedItem) {
-            var prod = this.props.items.find((item) => item._id === this.state.selectedItem);
+        if (this.props.adminControl.selectedId) {
+            var prod = this.props.items.find((item) => item._id === this.props.adminControl.selectedId);
             return (
                 <DetalleItem 
                     onDelete={this.props.onDelete}

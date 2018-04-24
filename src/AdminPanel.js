@@ -8,10 +8,6 @@ import Usuarios from './admin-components/Usuarios';
 import Ajustes from './admin-components/Ajustes';
 
 class AdminPanel extends Component {
-
-    constructor(props) {
-        super(props);
-    }
     
     render() {
         return (
@@ -26,7 +22,12 @@ class AdminPanel extends Component {
                 
                 <Route exact path={this.props.match.path} render={() => <Redirect to={`${this.props.match.path}/ventas`} />} />
                 <Route path={`${this.props.match.path}/settings`} component={Ajustes} />
-                <Route path={`${this.props.match.path}/ventas`} component={Ventas} />
+                <Route path={`${this.props.match.path}/ventas`} render={() => <Ventas
+                                                                                adminControl={this.props.adminControl}
+                                                                                loading={this.props.loading}
+                                                                                loadingError={this.props.loadingError}
+                                                                                adminControlSelectItem={this.props.adminControlSelectItem}
+                                                                                />} />
                 <Route path={`${this.props.match.path}/menu`} render={() => <Menu
                                                                                 menu={this.props.menu}
                                                                                 adminControl={this.props.adminControl}
@@ -34,9 +35,16 @@ class AdminPanel extends Component {
                                                                                 adminDeleteItemHandler={this.props.adminDeleteItemHandler}
                                                                                 adminShowEditFormHandler={this.props.adminShowEditFormHandler}
                                                                                 adminHandleClose={this.props.adminHandleClose}
+                                                                                adminControlSelectItem={this.props.adminControlSelectItem}
                                                                                 loading={this.props.loading}
+                                                                                loadingError={this.props.loadingError}
                                                                                 />} />
-                <Route path={`${this.props.match.path}/usuarios`} component={Usuarios} />
+                <Route path={`${this.props.match.path}/usuarios`} render={() => <Usuarios 
+                                                                                adminControl={this.props.adminControl}
+                                                                                loading={this.props.loading}
+                                                                                loadingError={this.props.loadingError}
+                                                                                adminControlSelectItem={this.props.adminControlSelectItem}
+                                                                                />} />
 
             </div>
         );

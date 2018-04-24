@@ -22,13 +22,13 @@ class DetalleItem extends Component {
                     <hr />
                     <Row className='text-center'>
                         <ButtonGroup bsSize='large'>
-                            <Button bsStyle='warning' onClick={() => onEdit(item.id)}><Glyphicon glyph="edit" /> Editar</Button>
+                            <Button bsStyle='warning' onClick={() => onEdit(item._id)}><Glyphicon glyph="edit" /> Editar</Button>
                             <Confirm
                                 onConfirm={() => onDelete(item._id)}
                                 body={'¿Está seguro de eliminar?'}
                                 confirmText="Eliminar"
                                 title="Eliminar Registro">
-                                <Button bsStyle='danger'><Glyphicon glyph="ban-circle" /> Eliminar</Button>
+                                <Button bsStyle='danger'><Glyphicon glyph="minus-sign" /> Deshabilitar</Button>
                             </Confirm>
                         </ButtonGroup>
                     </Row>
