@@ -53,7 +53,8 @@ class ResumenMesa extends Component {
                         <Button bsStyle="info" bsSize="large" block onClick={() => { this.props.history.goBack() }}>
                             <Glyphicon glyph="circle-arrow-left" /> Regresar
                         </Button>
-                        <Button bsStyle="success" bsSize="large" block onClick={() => { this.props.onFinishVentaHandler(currentMesa, this.props.history) }}>
+
+                        <Button bsStyle="success" bsSize="large" disabled={ventaMesa.length === 0} block onClick={() => { this.props.onFinishVentaHandler(currentMesa, this.props.history) }}>
                             <Glyphicon glyph="ok-circle" /> Finalizar Cuenta
                         </Button>
                     </Panel.Footer>
