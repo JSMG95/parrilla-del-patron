@@ -25,6 +25,7 @@ class Tables extends Component {
                                                     calculateSubtotal={this.props.calculateSubtotal} 
                                                     currentVenta={this.props.currentVenta} mesas={this.props.mesas} 
                                                     subtotalHandler={this.props.subtotalHandler}
+                                                    onAddPedido={this.props.onAddPedido}
                                                 />} />
 
                 <Route path={`${this.props.match.path}/:id`}
@@ -40,6 +41,7 @@ class Tables extends Component {
                                                 mesas={this.props.mesas} 
                                                 calculateTotal={this.props.calculateTotal} 
                                                 calculateSubtotal={this.props.calculateSubtotal}
+                                                onFinishDayHandler={this.props.onFinishDayHandler}
                                             />} />
                 <Route path={`${this.props.match.path}/:id`} 
                         render={(props) => <ResumenMesa {...props} 

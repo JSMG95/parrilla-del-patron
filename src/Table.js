@@ -43,7 +43,7 @@ class Table extends Component {
         return (
             <Col sm={6} md={3}>
                 <Panel >
-                    <Panel.Heading className="text-center"><h3 style={tableHeadingStyle}>{`Mesa ${this.props.detalle.id}`}</h3></ Panel.Heading>
+                    <Panel.Heading className="text-center"><h3 style={tableHeadingStyle}>{`${this.props.detalle.tipo} ${this.props.detalle.id}`}</h3></ Panel.Heading>
                     <Panel.Body>
                         <ListGroup>
                             {

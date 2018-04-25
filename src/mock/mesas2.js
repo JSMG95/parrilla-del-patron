@@ -7,12 +7,12 @@ export const Mesas = [
     {
         id: 2,
         status: "FINISHED",
-        tipo: "A domicilio",
+        tipo: "Mesa",
     },
     {
         id: 3,
         status: "PENDING",
-        tipo: "Bar",
+        tipo: "Mesa",
     },
     {
         id: 4,

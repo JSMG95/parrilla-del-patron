@@ -8,12 +8,14 @@ class ResumenMesa extends Component {
     }
 
     render() {
-        let currentMesa;
+        let currentMesa = {};
         if (this.props.mesas) {
             currentMesa = this.props.mesas.find((mesa) => {
                 return mesa.id == this.props.match.params.id
             });
         }
+
+        
         let ventaMesa = this.props.currentVenta.filter((venta) => {
             return venta.mesa.id == currentMesa.id
         });

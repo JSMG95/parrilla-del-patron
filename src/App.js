@@ -50,18 +50,21 @@ class App extends Component {
 
 
   onFinishVentaHandler2 = (mesa, browserHistory) => {
-    console.log(mesa.id);
     let foundIndex = this.state.mesas.findIndex((mesa2) => mesa2.id == mesa.id)
-    let newMesasState = [...this.state.mesas];
+    //let newMesasState = [...this.state.mesas];
+    let newMesasState = JSON.parse(JSON.stringify(this.state.mesas));
     newMesasState[foundIndex].status = "AVAILABLE";
     let newCurrentVenta = { ...this.state.currentVenta };
-    console.log(JSON.parse(JSON.stringify(this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id))));
     let tmp = JSON.parse(JSON.stringify(this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id)));
-    //let tmp = this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id);
     tmp.forEach((venta) => {
       delete venta.mesa
     })
-    console.log(tmp);
+    if (mesa.tipo === "Domicilio" || mesa.tipo === "Bar") {
+      console.log("va a borrar");
+      newMesasState = newMesasState.filter((mesa_) => mesa.id != mesa_.id);
+      console.log("New mesas", newMesasState);
+    }
+    browserHistory.goBack();
     this.setState({
       venta: [
         ...this.state.venta,
@@ -73,7 +76,7 @@ class App extends Component {
       currentVenta: this.state.currentVenta.filter((venta) => venta.mesa.id != mesa.id),
       mesas: newMesasState
     });
-    browserHistory.goBack();
+    
   }
 
   onFinishVentaHandler = (mesa, browserHistory) => {
@@ -177,7 +180,38 @@ class App extends Component {
       });
     }
   }
-  
+
+  onFinishDayHandler = () => {
+    //console.log(this.state.venta);
+    if (this.state.currentVenta.length > 0){
+
+    } else {
+    let data = {
+      fecha: new Date().toISOString(),
+      importe: this.calculateTotal2(),
+      detalle: this.state.venta
+    }
+    console.log("data", data)
+    this.setState({ loading: true, loadingError: false });
+    axios.post(`http://${this.ip}:3001/api/ventas`, data)
+      .then((res) => {
+        this.setState({ ...this.state, venta: [], loading: false  })
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ loadingError: true });
+      })
+    }
+  }
+
+  onAddPedido = (type = "Bar") => {
+    this.setState({mesas: [...this.state.mesas, {
+        id: this.state.mesas.length + 1,
+        status: 'AVAILABLE',
+        tipo: type
+      }] 
+    });
+  }  
 
   //------- ADMIN HANDLERS ------
   adminSaveItemHandler = (item) => {
@@ -232,6 +266,11 @@ class App extends Component {
     this.setState({ adminControl: adminControl2 });
   }
 
+  adminControlSelectItem = (id) => {
+    var adminControl = { ...this.state.adminControl, selectedId: id };
+    this.setState({ adminControl });
+  }
+
   render() {
     return (
       <BrowserRouter>
@@ -248,6 +287,8 @@ class App extends Component {
               onNewVentaProductoHandler={this.onNewVentaProductoHandler2}
               onVentaProductoDeleteHandler={this.onVentaProductoDeleteHandler2}
               onFinishVentaHandler={this.onFinishVentaHandler2}
+              onFinishDayHandler={this.onFinishDayHandler}
+              onAddPedido={this.onAddPedido}
               calculateSubtotal={this.calculateSubtotal}
               calculateTotal={this.calculateTotal2}
               loading={this.state.loading}
@@ -260,6 +301,7 @@ class App extends Component {
               adminDeleteItemHandler={this.adminDeleteItemHandler}
               adminShowEditFormHandler={this.adminShowEditFormHandler}
               adminHandleClose={this.adminHandleClose}
+              adminControlSelectItem={this.adminControlSelectItem}
               loading={this.state.loading}
             />} />
             <Route component={NotFound} />
