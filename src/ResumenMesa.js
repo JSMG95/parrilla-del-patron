@@ -17,14 +17,14 @@ class ResumenMesa extends Component {
 
         
         let ventaMesa = this.props.currentVenta.filter((venta) => {
-            return venta.mesa.id == currentMesa.id
+            return venta.mesa.id == this.props.match.params.id
         });
 
         return (
             <Col sm={4} md={4}>
                 <Panel>
                     <Panel.Heading>
-                        <h3 className="text-center"> {`Resumen mesa ${this.props.match.params.id}`}</h3>
+                        <h3 className="text-center"> {`Resumen pedido # ${this.props.match.params.id}`}</h3>
                     </Panel.Heading>
                     <Panel.Body>
                         <ListGroup style={{ fontSize: '15px' }}>

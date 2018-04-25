@@ -6,7 +6,7 @@ class DetalleItem extends Component {
 
     renderFields() {
         const t = Object.keys(this.props.item).map(key => {
-            if (key !== '_id' && key !== '__v'){
+            if (key !== '_id' && key !== '__v' && key !== 'detalle'){
                 return <h4 key={key}><b>{key.charAt(0).toUpperCase() + key.slice(1)}:</b> {this.props.item[key]}</h4>
             }
         });

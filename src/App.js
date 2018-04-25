@@ -28,7 +28,7 @@ class App extends Component {
     loadingError: false
   }
   lastVentaId = 7;
-  ip = '10.33.206.175';
+  ip = '10.33.196.237';
 
   componentDidMount() {
     this.setState({ loading: true, loadingError: false });
@@ -53,16 +53,16 @@ class App extends Component {
     let foundIndex = this.state.mesas.findIndex((mesa2) => mesa2.id == mesa.id)
     //let newMesasState = [...this.state.mesas];
     let newMesasState = JSON.parse(JSON.stringify(this.state.mesas));
-    newMesasState[foundIndex].status = "AVAILABLE";
+    if (foundIndex > 0){
+      newMesasState[foundIndex].status = "AVAILABLE";
+    }
     let newCurrentVenta = { ...this.state.currentVenta };
     let tmp = JSON.parse(JSON.stringify(this.state.currentVenta.filter((venta) => venta.mesa.id == mesa.id)));
     tmp.forEach((venta) => {
       delete venta.mesa
     })
     if (mesa.tipo === "Domicilio" || mesa.tipo === "Bar") {
-      console.log("va a borrar");
       newMesasState = newMesasState.filter((mesa_) => mesa.id != mesa_.id);
-      console.log("New mesas", newMesasState);
     }
     browserHistory.goBack();
     this.setState({
@@ -89,10 +89,9 @@ class App extends Component {
     });
     var foundIndex = this.state.mesas.findIndex(mesa2 => mesa2.id == mesa.id);
     let stateToEmpty = [...this.state.mesas];
-    console.log(stateToEmpty)
     stateToEmpty[foundIndex].venta.length = 0;
     stateToEmpty[foundIndex].status = "AVAILABLE";
-    console.log(stateToEmpty)
+
 
     this.setState({ mesas: [...stateToEmpty] })
     browserHistory.goBack();
@@ -101,11 +100,9 @@ class App extends Component {
 
   calculateSubtotal = (venta) => {
     let subtotal = 0;
-    console.log(venta);
     if (venta && venta.length > 0) {
       venta.map((producto, index) => {
         if (producto) {
-          console.log(producto, producto.cantidad)
           subtotal += producto.cantidad * producto.precio;
         }
       });
@@ -191,7 +188,6 @@ class App extends Component {
       importe: this.calculateTotal2(),
       detalle: this.state.venta
     }
-    console.log("data", data)
     this.setState({ loading: true, loadingError: false });
     axios.post(`http://${this.ip}:3001/api/ventas`, data)
       .then((res) => {
@@ -271,6 +267,19 @@ class App extends Component {
     this.setState({ adminControl });
   }
 
+  adminLoadVentas = () => {
+    this.setState({loading: true, loadingError: false});
+    axios.get(`http://${this.ip}:3001/api/ventas`)
+    .then((response) => {
+      this.setState({adminVentas: response.data, loading: false, loadingError: false});
+    })
+    .catch((error) => {
+      console.log(error);
+      this.setState({loadingError: true});
+    })
+
+  }
+
   render() {
     return (
       <BrowserRouter>
@@ -297,12 +306,14 @@ class App extends Component {
             <Route path="/admin" render={(props) => <AdminPanel {...props}
               menu={this.state.productos}
               adminControl={this.state.adminControl}
+              adminVentas={this.state.adminVentas}
               adminSaveItemHandler={this.adminSaveItemHandler}
               adminDeleteItemHandler={this.adminDeleteItemHandler}
               adminShowEditFormHandler={this.adminShowEditFormHandler}
               adminHandleClose={this.adminHandleClose}
               adminControlSelectItem={this.adminControlSelectItem}
               loading={this.state.loading}
+              adminLoadVentas={this.adminLoadVentas}
             />} />
             <Route component={NotFound} />
           </Switch>
