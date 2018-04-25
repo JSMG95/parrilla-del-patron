@@ -17,7 +17,7 @@ class ListaDetalleItems extends Component {
                     key={item._id}
                     active={item._id === this.props.adminControl.selectedId} 
                     onClick={() => this.props.adminControlSelectItem(item._id)}>
-                    {item.descripcion}
+                    {item.descripcion || item.fecha}
                 </ListGroupItem>
             );
         }

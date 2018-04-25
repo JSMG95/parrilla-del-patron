@@ -24,9 +24,11 @@ class AdminPanel extends Component {
                 <Route path={`${this.props.match.path}/settings`} component={Ajustes} />
                 <Route path={`${this.props.match.path}/ventas`} render={() => <Ventas
                                                                                 adminControl={this.props.adminControl}
+                                                                                adminVentas={this.props.adminVentas}
                                                                                 loading={this.props.loading}
                                                                                 loadingError={this.props.loadingError}
                                                                                 adminControlSelectItem={this.props.adminControlSelectItem}
+                                                                                adminLoadVentas={this.props.adminLoadVentas}
                                                                                 />} />
                 <Route path={`${this.props.match.path}/menu`} render={() => <Menu
                                                                                 menu={this.props.menu}

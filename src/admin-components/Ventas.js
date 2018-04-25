@@ -9,6 +9,10 @@ class Ventas extends Component {
         super(props);
         this.formBtnStyle = 'success';
     }
+
+    componentDidMount(){
+        this.props.adminLoadVentas();
+    }
     
     render(){
         return(
@@ -16,7 +20,7 @@ class Ventas extends Component {
                 <Col md={12}>
                     <Panel style={styles.extPanelStyle}>
                     <ListaDetalleItems 
-                        items={data}
+                        items={this.props.adminVentas}
                         onDelete={(key) => console.log('Delete: ' + key)}
                         onEdit={(key) => console.log('Edit: ' + key)}
                         loading={this.props.loading}
