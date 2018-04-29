@@ -29,6 +29,7 @@ class Menu extends Component {
                         loading={this.props.loading}
                         adminControl={this.props.adminControl}
                         adminControlSelectItem={this.props.adminControlSelectItem}
+                        entity={'productos'}
                     />
                 </Panel>
                 </Col>

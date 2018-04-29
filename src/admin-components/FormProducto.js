@@ -26,7 +26,6 @@ class FormProducto extends Component {
 	}
 
     handleOnHide = () => {
-        console.log("hola")
         this.setState({ 
             item: {
                 _id: null,

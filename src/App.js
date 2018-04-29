@@ -3,6 +3,7 @@ import logo from './logo.svg';
 //import './App.css';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import axios from 'axios';
+import moment from 'moment';
 import Header from './Header';
 import Tables from './Tables';
 import AdminPanel from './AdminPanel';
@@ -16,19 +17,21 @@ class App extends Component {
     mesas: Mesas,
     productos: [],
     venta: [],
-    currentVenta: CurrentVenta,
+    currentVenta: [],
     subtotal: 0,
     adminControl: {
       selectedId: null,
       formShow: false,
-      itemToEdit: null
+      itemToEdit: null,
+      startDate: moment().startOf('month'),
+      endDate: moment().endOf('day')
     },
     adminVentas: [],
     loading: true,
     loadingError: false
   }
   lastVentaId = 7;
-  ip = '10.33.196.237';
+  ip = '192.168.1.69';
 
   componentDidMount() {
     this.setState({ loading: true, loadingError: false });
@@ -179,12 +182,11 @@ class App extends Component {
   }
 
   onFinishDayHandler = () => {
-    //console.log(this.state.venta);
     if (this.state.currentVenta.length > 0){
-
+      alert('Debe finalizar primero todas las ventas');
     } else {
     let data = {
-      fecha: new Date().toISOString(),
+      fecha: moment().subtract(5, 'hour'),
       importe: this.calculateTotal2(),
       detalle: this.state.venta
     }
@@ -250,8 +252,7 @@ class App extends Component {
   }
 
   adminShowEditFormHandler = (key) => {
-    var item = this.state.productos.filter((item) => item.id === key);
-    //this.formBtnStyle = 'warning';
+    var item = this.state.productos.filter((item) => item._id === key);
     var adminControl = {...this.state.adminControl, itemToEdit: item[0], formShow: true};
     this.setState({ adminControl });
   }
@@ -268,16 +269,35 @@ class App extends Component {
   }
 
   adminLoadVentas = () => {
-    this.setState({loading: true, loadingError: false});
-    axios.get(`http://${this.ip}:3001/api/ventas`)
-    .then((response) => {
-      this.setState({adminVentas: response.data, loading: false, loadingError: false});
-    })
-    .catch((error) => {
-      console.log(error);
-      this.setState({loadingError: true});
-    })
+    const { startDate, endDate } = this.state.adminControl;
+    if (startDate > endDate) {
+      alert('La fecha inicial es mayor que la fecha final');
+      this.setState({adminVentas: [], loading: false, loadingError: false});
+    } else {
+      this.setState({ loading: true, loadingError: false });
+      let dates = { startDate, endDate };
+      axios.get(`http://${this.ip}:3001/api/ventas`, { params: { dates }})
+      .then((response) => {
+        this.setState({adminVentas: response.data, loading: false, loadingError: false});
+      })
+      .catch((error) => {
+        console.log(error);
+        this.setState({loadingError: true});
+      })
+    }
+  }
 
+  adminVentasSetDateHandler = (date, x = 'start') => {
+    var adminControl;
+    switch(x) {
+      case 'end':
+        adminControl = { ...this.state.adminControl, endDate: moment(date).endOf('day') };
+        break;
+      case 'start':
+        adminControl = { ...this.state.adminControl, startDate: moment(date).startOf('day') };
+        break;
+    }
+    this.setState({ adminControl });
   }
 
   render() {
@@ -306,14 +326,18 @@ class App extends Component {
             <Route path="/admin" render={(props) => <AdminPanel {...props}
               menu={this.state.productos}
               adminControl={this.state.adminControl}
-              adminVentas={this.state.adminVentas}
+              adminVentas={{
+                ventas: this.state.adminVentas,
+                setDateHandler: this.adminVentasSetDateHandler,
+                loadVentas: this.adminLoadVentas
+              }}
               adminSaveItemHandler={this.adminSaveItemHandler}
               adminDeleteItemHandler={this.adminDeleteItemHandler}
               adminShowEditFormHandler={this.adminShowEditFormHandler}
               adminHandleClose={this.adminHandleClose}
               adminControlSelectItem={this.adminControlSelectItem}
+              calculateSubtotal={this.calculateSubtotal}
               loading={this.state.loading}
-              adminLoadVentas={this.adminLoadVentas}
             />} />
             <Route component={NotFound} />
           </Switch>

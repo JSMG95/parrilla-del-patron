@@ -1,17 +1,17 @@
 export const Mesas = [
     {
         id: 1,
-        status: "PENDING",
+        status: "AVAILABLE",
         tipo: "Mesa",
     },
     {
         id: 2,
-        status: "FINISHED",
+        status: "AVAILABLE",
         tipo: "Mesa",
     },
     {
         id: 3,
-        status: "PENDING",
+        status: "AVAILABLE",
         tipo: "Mesa",
     },
     {
