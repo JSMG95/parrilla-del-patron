@@ -7,6 +7,7 @@ import Menu from './admin-components/Menu';
 import Usuarios from './admin-components/Usuarios';
 import Ajustes from './admin-components/Ajustes';
 import Consumos from './admin-components/Consumos';
+import Reportes from './admin-components/Reportes';
 
 class AdminPanel extends Component {
     
@@ -18,6 +19,7 @@ class AdminPanel extends Component {
                     <LinkContainer to={`${this.props.match.url}/ventas`}><NavItem eventKey="2" >Ventas</NavItem></LinkContainer>
                     <LinkContainer to={`${this.props.match.url}/menu`}><NavItem eventKey="3">Menú</NavItem></LinkContainer>
                     <LinkContainer to={`${this.props.match.url}/usuarios`}><NavItem eventKey="4">Usuarios</NavItem></LinkContainer>
+                    <LinkContainer to={`${this.props.match.url}/reportes`}><NavItem eventKey="5">Reportes</NavItem></LinkContainer>
                 </Nav>
                 
                 <Route exact path={this.props.match.path} render={() => <Redirect to={`${this.props.match.path}/menu`} />} />
@@ -48,11 +50,20 @@ class AdminPanel extends Component {
                                                                                 loading={this.props.loading}
                                                                                 loadingError={this.props.loadingError}
                                                                                 />} />
-                <Route exact path={`${this.props.match.path}/usuarios`} render={() => <Usuarios {...this.props}
+                <Route exact path={`${this.props.match.path}/usuarios`} render={(props) => <Usuarios {...this.props}
                                                                                 adminControl={this.props.adminControl}
                                                                                 loading={this.props.loading}
                                                                                 loadingError={this.props.loadingError}
                                                                                 adminControlSelectItem={this.props.adminControlSelectItem}
+                                                                                />} />
+                <Route exact path={`${this.props.match.path}/reportes`} render={(props) => <Reportes {...this.props}
+                                                                                adminControl={this.props.adminControl}
+                                                                                loading={this.props.loading}
+                                                                                loadingError={this.props.loadingError}
+                                                                                adminControlSelectItem={this.props.adminControlSelectItem}
+                                                                                generateMonthReport={this.props.generateMonthReport}
+                                                                                generateYearReport={this.props.generateYearReport}
+                                                                                ventasMes={this.props.ventasMes}
                                                                                 />} />
             </div>
         );
