@@ -28,10 +28,15 @@ class App extends Component {
     },
     adminVentas: [],
     loading: true,
-    loadingError: false
+    loadingError: false,
+    ventasMes: []
   }
   lastVentaId = 7;
+<<<<<<< HEAD
   ip = 'localhost';
+=======
+  ip = '10.33.193.2';
+>>>>>>> 52144c86f90598f2fda6e8d1784fe09b290ff921
 
   componentDidMount() {
     this.setState({ loading: true, loadingError: false });
@@ -56,7 +61,7 @@ class App extends Component {
     let foundIndex = this.state.mesas.findIndex((mesa2) => mesa2.id == mesa.id)
     //let newMesasState = [...this.state.mesas];
     let newMesasState = JSON.parse(JSON.stringify(this.state.mesas));
-    if (foundIndex > 0){
+    if (foundIndex > 0) {
       newMesasState[foundIndex].status = "AVAILABLE";
     }
     let newCurrentVenta = { ...this.state.currentVenta };
@@ -72,14 +77,14 @@ class App extends Component {
       venta: [
         ...this.state.venta,
         {
-          venta:[...tmp],
-          mesa: this.state.mesas.filter((_mesa)=> _mesa.id == mesa.id)
+          venta: [...tmp],
+          mesa: this.state.mesas.filter((_mesa) => _mesa.id == mesa.id)
         }
       ],
       currentVenta: this.state.currentVenta.filter((venta) => venta.mesa.id != mesa.id),
       mesas: newMesasState
     });
-    
+
   }
 
   onFinishVentaHandler = (mesa, browserHistory) => {
@@ -182,64 +187,65 @@ class App extends Component {
   }
 
   onFinishDayHandler = () => {
-    if (this.state.currentVenta.length > 0){
+    if (this.state.currentVenta.length > 0) {
       alert('Debe finalizar primero todas las ventas');
     } else {
-    let data = {
-      fecha: moment().subtract(5, 'hour'),
-      importe: this.calculateTotal2(),
-      detalle: this.state.venta
-    }
-    this.setState({ loading: true, loadingError: false });
-    axios.post(`http://${this.ip}:3001/api/ventas`, data)
-      .then((res) => {
-        this.setState({ ...this.state, venta: [], loading: false  })
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({ loadingError: true });
-      })
+      let data = {
+        fecha: moment().subtract(5, 'hour'),
+        importe: this.calculateTotal2(),
+        detalle: this.state.venta
+      }
+      this.setState({ loading: true, loadingError: false });
+      axios.post(`http://${this.ip}:3001/api/ventas`, data)
+        .then((res) => {
+          this.setState({ ...this.state, venta: [], loading: false })
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({ loadingError: true });
+        })
     }
   }
 
   onAddPedido = (type = "Bar") => {
-    this.setState({mesas: [...this.state.mesas, {
+    this.setState({
+      mesas: [...this.state.mesas, {
         id: this.state.mesas.length + 1,
         status: 'AVAILABLE',
         tipo: type
-      }] 
+      }]
     });
-  }  
+  }
 
   //------- ADMIN HANDLERS ------
   adminSaveItemHandler = (item) => {
     this.setState({ loading: true, loadingError: false });
-    if (item._id != null){
-      axios.put(`http://${this.ip}:3001/api/productos`, { item, type:'Update' })
-      .then((res) => {
-        this.setState({ productos: res.data, loading: false, loadingError: true })
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({ loadingError: true });
-      });
+    if (item._id != null) {
+      axios.put(`http://${this.ip}:3001/api/productos`, { item, type: 'Update' })
+        .then((res) => {
+          this.setState({ productos: res.data, loading: false, loadingError: true })
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({ loadingError: true });
+        });
     } else {
       axios.post(`http://${this.ip}:3001/api/productos`, item)
-      .then((res) => {
-        this.setState({ productos: res.data, loading: false, loadingError: true })
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({ loadingError: true });
-      });
+        .then((res) => {
+          this.setState({ productos: res.data, loading: false, loadingError: true })
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({ loadingError: true });
+        });
     }
-    var adminControl = {...this.state.adminControl, formShow: false, itemToEdit: null };
+    var adminControl = { ...this.state.adminControl, formShow: false, itemToEdit: null };
     this.setState({ adminControl });
   }
 
   adminDeleteItemHandler = (key) => {
     this.setState({ loading: true, loadingError: false });
-    axios.put(`http://${this.ip}:3001/api/productos`, { item: { _id: key }, type:'Delete' })
+    axios.put(`http://${this.ip}:3001/api/productos`, { item: { _id: key }, type: 'Delete' })
       .then((res) => {
         this.setState({ productos: res.data, loading: false, loadingError: true })
       })
@@ -247,19 +253,19 @@ class App extends Component {
         console.log(err);
         this.setState({ loadingError: true });
       });
-    var adminControl = {...this.state.adminControl, selectedId: null};
+    var adminControl = { ...this.state.adminControl, selectedId: null };
     this.setState({ adminControl });
   }
 
   adminShowEditFormHandler = (key) => {
     var item = this.state.productos.filter((item) => item._id === key);
-    var adminControl = {...this.state.adminControl, itemToEdit: item[0], formShow: true};
+    var adminControl = { ...this.state.adminControl, itemToEdit: item[0], formShow: true };
     this.setState({ adminControl });
   }
 
   adminHandleClose = (show = false) => {
     //this.formBtnStyle = 'success';
-    var adminControl2 = {...this.state.adminControl, formShow: show, itemToEdit: null };
+    var adminControl2 = { ...this.state.adminControl, formShow: show, itemToEdit: null };
     this.setState({ adminControl: adminControl2 });
   }
 
@@ -272,24 +278,49 @@ class App extends Component {
     const { startDate, endDate } = this.state.adminControl;
     if (startDate > endDate) {
       alert('La fecha inicial es mayor que la fecha final');
-      this.setState({adminVentas: [], loading: false, loadingError: false});
+      this.setState({ adminVentas: [], loading: false, loadingError: false });
     } else {
       this.setState({ loading: true, loadingError: false });
       let dates = { startDate, endDate };
-      axios.get(`http://${this.ip}:3001/api/ventas`, { params: { dates }})
+      axios.get(`http://${this.ip}:3001/api/ventas`, { params: { dates } })
+        .then((response) => {
+          this.setState({ adminVentas: response.data, loading: false, loadingError: false });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.setState({ loadingError: true });
+        })
+    }
+  }
+
+  generateMonthReport = (month, year) => {
+    axios.get(`http://${this.ip}:3001/api/report/mes`, { params: { month, year } })
       .then((response) => {
-        this.setState({adminVentas: response.data, loading: false, loadingError: false});
+
+        this.setState({ ventasMes: [response.data] })
+
       })
       .catch((error) => {
         console.log(error);
-        this.setState({loadingError: true});
+        this.setState({ loadingError: true });
       })
-    }
+  }
+
+  generateYearReport = (month,year) => {
+    axios.get(`http://${this.ip}:3001/api/report/year`, { params: { month, year } })
+      .then((response) => {  
+        this.setState({ventasMes: response.data})
+      })
+      .catch((error) => {
+        console.log(error);
+        this.setState({ loadingError: true });
+      })
+   
   }
 
   adminVentasSetDateHandler = (date, x = 'start') => {
     var adminControl;
-    switch(x) {
+    switch (x) {
       case 'end':
         adminControl = { ...this.state.adminControl, endDate: moment(date).endOf('day') };
         break;
@@ -322,7 +353,7 @@ class App extends Component {
               calculateTotal={this.calculateTotal2}
               loading={this.state.loading}
               loadingError={this.state.loadingError} />}
-               />
+            />
             <Route path="/admin" render={(props) => <AdminPanel {...props}
               menu={this.state.productos}
               adminControl={this.state.adminControl}
@@ -331,12 +362,15 @@ class App extends Component {
                 setDateHandler: this.adminVentasSetDateHandler,
                 loadVentas: this.adminLoadVentas
               }}
+              ventasMes={this.state.ventasMes}
               adminSaveItemHandler={this.adminSaveItemHandler}
               adminDeleteItemHandler={this.adminDeleteItemHandler}
               adminShowEditFormHandler={this.adminShowEditFormHandler}
               adminHandleClose={this.adminHandleClose}
               adminControlSelectItem={this.adminControlSelectItem}
               calculateSubtotal={this.calculateSubtotal}
+              generateMonthReport={this.generateMonthReport}
+              generateYearReport={this.generateYearReport}
               loading={this.state.loading}
             />} />
             <Route component={NotFound} />
