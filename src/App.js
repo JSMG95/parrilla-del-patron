@@ -31,7 +31,7 @@ class App extends Component {
     loadingError: false
   }
   lastVentaId = 7;
-  ip = '192.168.1.69';
+  ip = 'localhost';
 
   componentDidMount() {
     this.setState({ loading: true, loadingError: false });

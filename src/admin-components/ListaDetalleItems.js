@@ -49,7 +49,6 @@ class ListaDetalleItems extends Component {
         if (this.props.adminControl.selectedId) {
             if (this.props.entity === 'consumos') {
                 const { selectedId } = this.props.adminControl;
-                console.log('cero', this.props.items[0]);
                 return (
                     <DetalleConsumo {...this.props}
                         onDelete={this.props.onDelete}
